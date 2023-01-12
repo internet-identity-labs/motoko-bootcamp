@@ -190,3 +190,52 @@ When you deploy this locally (`dfx deploy`) and try to click the `Click Me!` but
 ![Step 3 Error](./assets/step-3-error-signature-could-not-be-verified.png)
 
 To fix that, we'll need to deploy Internet Identity to the local replica which you have started with `dfx start`. If you need help with that, please [shoot me](https://twitter.com/__litzi__) or [IdentityMaxies](https://twitter.com/identitymaxis) a DM on Twitter.
+
+## Step 4: Using another identity provider (e.g. AstroX or NFID)
+
+All `AuthClient` compatible Identity Provider can now be used. Therefore we just need to replace the default `identityProvider` when calling `authClient.login`.
+
+We change:
+
+```Javascript
+document.getElementById("login").addEventListener("click", async (e) => {
+  if (!authClient) throw new Error("AuthClient not initialized");
+
+  authClient.login({
+    onSuccess: handleSuccess,
+  });
+});
+```
+
+to:
+
+```Javascript
+document.getElementById("login").addEventListener("click", async (e) => {
+  if (!authClient) throw new Error("AuthClient not initialized");
+
+  const APP_NAME = "Litzi's Motoko Bootcamp";
+  const APP_LOGO = "https://nfid.one/icons/favicon-96x96.png";
+  const CONFIG_QUERY = `?applicationName=${APP_NAME}&applicationLogo=${APP_LOGO}`;
+
+  const identityProvider = `https://nfid.one/authenticate${CONFIG_QUERY}`;
+
+  authClient.login({
+    identityProvider,
+    onSuccess: handleSuccess,
+  });
+});
+```
+
+and deploy again:
+
+```
+dfx deploy --network ic
+```
+
+After that you'll see NFID as an Identity Provider when clicking on `Log me in`:
+
+![Step 4](./assets/step-4-nfid.png)
+
+After gently smashing the `Click Me!` button:
+
+![Step 4](./assets/step-4-authenticated.png)

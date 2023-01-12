@@ -41,7 +41,14 @@ function handleSuccess() {
 document.getElementById("login").addEventListener("click", async (e) => {
   if (!authClient) throw new Error("AuthClient not initialized");
 
+  const APP_NAME = "Litzi's Motoko Bootcamp";
+  const APP_LOGO = "https://nfid.one/icons/favicon-96x96.png";
+  const CONFIG_QUERY = `?applicationName=${APP_NAME}&applicationLogo=${APP_LOGO}`;
+
+  const identityProvider = `https://nfid.one/authenticate${CONFIG_QUERY}`;
+
   authClient.login({
+    identityProvider,
     onSuccess: handleSuccess,
   });
 });
