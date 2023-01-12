@@ -152,3 +152,41 @@ When you click the button "Log me in", and running through the authentication pr
 ![Step 2](./assets/step-2.png)
 
 So we get the principalId on the frontend but the backend still doesn't retrieve it. Let's fix that in the next step.
+
+## Step 3: Getting the same identity backend side
+
+To make authenticated calls to our backend, we need to pass the received identity to the javascript agent who is making the requests on our behalf. So add an import to your `index.js` file like so:
+
+```Javascript
+import { Actor } from "@dfinity/agent";
+```
+
+And update the `handleSuccess` function like so:
+
+```Javascript
+function handleSuccess() {
+  const principalId = authClient.getIdentity().getPrincipal().toText();
+
+  document.getElementById(
+    "principalId"
+  ).innerText = `Your PrincipalId: ${principalId}`;
+
+  Actor.agentOf(motoko_bootcamp_backend).replaceIdentity(
+    authClient.getIdentity()
+  );
+}
+```
+
+Time to deploy again:
+
+```
+dfx deploy --network ic
+```
+
+![Step 3](./assets/step-3.png)
+
+When you deploy this locally (`dfx deploy`) and try to click the `Click Me!` button after you've authenticated, you'll receive an error like this:
+
+![Step 3 Error](./assets/step-3-error-signature-could-not-be-verified.png)
+
+To fix that, we'll need to deploy Internet Identity to the local replica which you have started with `dfx start`. If you need help with that, please [shoot me](https://twitter.com/__litzi__) or [IdentityMaxies](https://twitter.com/identitymaxis) a DM on Twitter.

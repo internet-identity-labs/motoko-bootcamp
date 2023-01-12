@@ -1,3 +1,4 @@
+import { Actor } from "@dfinity/agent";
 import { AuthClient } from "@dfinity/auth-client";
 import { motoko_bootcamp_backend } from "../../declarations/motoko_bootcamp_backend";
 
@@ -31,6 +32,10 @@ function handleSuccess() {
   document.getElementById(
     "principalId"
   ).innerText = `Your PrincipalId: ${principalId}`;
+
+  Actor.agentOf(motoko_bootcamp_backend).replaceIdentity(
+    authClient.getIdentity()
+  );
 }
 
 document.getElementById("login").addEventListener("click", async (e) => {
