@@ -234,8 +234,36 @@ dfx deploy --network ic
 
 After that you'll see NFID as an Identity Provider when clicking on `Log me in`:
 
-![Step 4](./assets/step-4-nfid.png)
+![Step 4 NFID](./assets/step-4-nfid.png)
 
 After gently smashing the `Click Me!` button:
 
-![Step 4](./assets/step-4-authenticated.png)
+![Step 4 authenticated](./assets/step-4-authenticated.png)
+
+## Step 5: Improving UX by opening the IDP in a popup window
+
+by default, IDP opens in a new tab. There is a more user friendly configuration to handle the IDP in a popup window.
+
+Change the `config` passed to `authClient.login` to the following:
+
+```Javascript
+  authClient.login({
+    identityProvider,
+    onSuccess: handleSuccess,
+    windowOpenerFeatures: `
+      left=${window.screen.width / 2 - 525 / 2},
+      top=${window.screen.height / 2 - 705 / 2},
+      toolbar=0,location=0,menubar=0,width=525,height=705
+    `,
+  });
+```
+
+when redeploying:
+
+```
+dfx deploy --network ic
+```
+
+the IDP loads in a popup like this:
+
+![Step 5 popup](./assets/step-5.png)
