@@ -1,4 +1,11 @@
+import { AuthClient } from "@dfinity/auth-client";
 import { motoko_bootcamp_backend } from "../../declarations/motoko_bootcamp_backend";
+
+let authClient = null;
+
+async function init() {
+  authClient = await AuthClient.create();
+}
 
 document.querySelector("form").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -17,3 +24,21 @@ document.querySelector("form").addEventListener("submit", async (e) => {
 
   return false;
 });
+
+function handleSuccess() {
+  const principalId = authClient.getIdentity().getPrincipal().toText();
+
+  document.getElementById(
+    "principalId"
+  ).innerText = `Your PrincipalId: ${principalId}`;
+}
+
+document.getElementById("login").addEventListener("click", async (e) => {
+  if (!authClient) throw new Error("AuthClient not initialized");
+
+  authClient.login({
+    onSuccess: handleSuccess,
+  });
+});
+
+init();
